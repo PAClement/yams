@@ -26,6 +26,7 @@ class Dices:
         self.current_Dice = Dice()
 
     def roll(self, nb_dice):
+        self.dices = []
         for i in range(0, nb_dice):
             self.current_Dice.roll()
             self.dices.append(self.current_Dice.get_value())
