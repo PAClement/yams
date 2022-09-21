@@ -6,13 +6,13 @@ class Combination:
 
     model = [
         {
-            "one": False, "two": False, "three": False,
-            "four": False, "five": False, "six": False
+            "1": False, "2": False, "3": False,
+            "4": False, "5": False, "6": False
         },
 
         {
             "brelan": False, "square": False, "full": False,
-            "small_suite": False, "big_suite": False, "yams": False
+            "small_suite": False, "big_suite": False, "yams": False, "chance": True
         }
     ]
 
@@ -50,4 +50,4 @@ class Combination:
         if (re.match("23456", list_number) or re.match("12345", list_number)):
             self.model[1]['big_suite'] = True
 
-        print(self.model)
+        return self.model
