@@ -87,7 +87,7 @@ class Game:
                 print(res['combination'])
 
                 # set score on scoreboard
-                scoreboard = self.score.set_scored(
+                self.score.set_scored(
                     res['combination'], self.tab_dice)
             else:
 
@@ -106,13 +106,24 @@ class Game:
                 self.score.set_score_to_zero(
                     res_set_to_zero['combination_to_zero'])
 
+            os.system('cls' if os.name == 'nt' else 'clear')
+
             # verify if scoreboard is full
             if (self.score.state_scoreboard()):
                 break
 
-            os.system('cls' if os.name == 'nt' else 'clear')
+        print("game ended")
 
-        print("game is terminated")
+        scoreboard = self.score.get_scoreboard()
+
+        print("-----------------")
+        print("your score : ", scoreboard[0])
+        print("-----------------")
+
+        for i in range(2):
+            for key, value in scoreboard[1][i].items():
+                print(key, ' | ', value)
+                print("____________________")
 
 
 play = Game()

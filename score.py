@@ -117,6 +117,21 @@ class Score:
     def set_score_to_zero(self, value_key):
 
         for i in range(2):
-            self.score_tab[i][value_key] = 0
+            if value_key in self.score_tab[i].keys():
+                self.score_tab[i][value_key] = 0
 
         return self.score_tab
+
+    def get_scoreboard(self):
+
+        final_scoreboard = []
+        score = 0
+
+        for i in range(2):
+            for key, value in self.score_tab[i].items():
+
+                score = score + value
+
+        final_scoreboard.append(score)
+        final_scoreboard.append(self.score_tab)
+        return final_scoreboard
