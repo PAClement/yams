@@ -1,3 +1,4 @@
+
 import numpy as np
 
 
@@ -5,12 +6,12 @@ class Score:
 
     score_tab = [
         {
-            "1": "6", "2": False, "3": False,
-            "4": False, "5": False, "6": False
+            "1": None, "2": None, "3": None,
+            "4": None, "5": None, "6": None
         },
         {
-            "brelan": "18", "square": False, "full": False,
-            "small_suite": False, "big_suite": "40", "yams": False, "chance": False
+            "brelan": None, "square": None, "full": None,
+            "small_suite": None, "big_suite": None, "yams": None, "chance": None
         }
     ]
 
@@ -31,7 +32,7 @@ class Score:
         for i in range(2):
             for key, value in model[i].items():
 
-                if (self.score_tab[i][key] != False):
+                if (self.score_tab[i][key] != None):
 
                     # this score is not empty
                     model[i][key] = self.score_tab[i][key]
@@ -64,9 +65,19 @@ class Score:
                 count = np.count_nonzero(np.array(player_dice) == 6)
                 self.score_tab[0]["6"] = count * 6
             case "brelan":
-                pass
+                brelan_tab = np.array(player_dice)
+
+                for i in range(6):
+                    count = np.count_nonzero(brelan_tab == i+1)
+                    if (count >= 3):
+                        self.score_tab[1]["brelan"] = 3 * (i+1)
             case "square":
-                pass
+                square_tab = np.array(player_dice)
+
+                for i in range(6):
+                    count = np.count_nonzero(square_tab == i+1)
+                    if (count >= 3):
+                        self.score_tab[1]["square"] = 4 * (i+1)
             case "full":
                 self.score_tab[1]["full"] = 25
             case "small_suite":
@@ -78,5 +89,34 @@ class Score:
             case "chance":
                 dice_sum = np.sum(player_dice)
                 self.score_tab[1]["chance"] = dice_sum
+
+        return self.score_tab
+
+    def state_scoreboard(self):
+
+        for i in range(2):
+            for key, value in self.score_tab[i].items():
+
+                if (self.score_tab[i][key] == None):
+                    return False
+
+        return True
+
+    def get_unscore_tab(self):
+
+        delete_tab = []
+
+        for i in range(2):
+            for key, value in self.score_tab[i].items():
+
+                if (self.score_tab[i][key] == None):
+                    delete_tab.append(key)
+
+        return delete_tab
+
+    def set_score_to_zero(self, value_key):
+
+        for i in range(2):
+            self.score_tab[i][value_key] = 0
 
         return self.score_tab

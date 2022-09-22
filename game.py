@@ -1,7 +1,8 @@
-from pyexpat import model
+import os
 import dice
 import combination
 import score
+import inquirer
 
 
 class Game:
@@ -19,47 +20,99 @@ class Game:
             print("Lancer les dés...")
 
             current_roll = self.dices.roll(5 - len(self.tab_dice))
-            if (len(self.tab_dice) != 0):
-                print("Vos dés : ", self.tab_dice)
 
-            print("Nouveau lancé : ", current_roll)
+            if (i < 2):
+                if (len(self.tab_dice) != 0):
+                    print("Vos dés : ", self.tab_dice)
 
-            print("Continuer ou areter ? | 1 : continuer , 0 : areter")
-            start_stop = int(input())
+                print("Nouveau lancé : ", current_roll)
+                roll_dice = [
+                    inquirer.List(
+                        "roll_dice",
+                        message="keep dice, reroll All ou stop ? ",
+                        choices=['keep dice', 'reroll', 'stop'],
+                    ),
+                ]
 
-            if (start_stop == 1 and len(self.tab_dice) < 5):
-                print("Vos dés : ", current_roll)
-                print(
-                    "Quels dés voulez-vous garder ? | input la valeur des dés : patern 1,2,3")
-                keep_dice = input()
-                for i in keep_dice:
-                    if (i != ','):
-                        self.tab_dice.append(int(i))
-            else:
-                if (start_stop == 0):
-                    for i in current_roll:
-                        self.tab_dice.append(int(i))
-                return
+                res = inquirer.prompt(roll_dice)
+                start_stop = res['roll_dice']
+
+                if (start_stop == "keep dice" and len(self.tab_dice) < 5):
+                    print("Vos dés : ")
+                    print(
+                        "Quels dés voulez-vous garder ?", current_roll, " | input la valeur des dés : patern 1,2,3")
+                    keep_dice = input()
+                    for j in keep_dice:
+                        if (j != ','):
+                            if (len(self.tab_dice) < 5):
+                                self.tab_dice.append(int(j))
+                elif (start_stop == "reroll"):
+                    continue
+                else:
+                    for j in current_roll:
+                        if (len(self.tab_dice) < 5):
+                            self.tab_dice.append(int(j))
+
+                    return
+
+        for j in current_roll:
+            if (len(self.tab_dice) < 5):
+                self.tab_dice.append(int(j))
 
     def playGame(self):
         print("Game started !")
 
-        # Retrieve players dice after 3 round
-        # self.get_dice()
+        while True:
+            # Retrieve players dice after 3 round
+            self.tab_dice = []
+            self.get_dice()
 
-        self.tab_dice = [6, 1, 6, 6, 3]
+            # test Combination possible
+            model_combination = self.combination.get_combination(self.tab_dice)
 
-        # test Combination possible
-        model_combination = self.combination.get_combination(self.tab_dice)
+            # Verification which score is available
+            model_scored = self.score.score_verification(model_combination)
 
-        # Verification which score is available
-        model_scored = self.score.score_verification(model_combination)
+            if (len(model_scored) != 0):
+                print("Vos dés ", self.tab_dice)
+                combination_question = [
+                    inquirer.List(
+                        "combination",
+                        message="Quelle combinaison voulez-vous ? ",
+                        choices=model_scored,
+                    ),
+                ]
 
-        print(model_scored)
-        res = input("Quelle combinaison voulez-vous ? ")
+                res = inquirer.prompt(combination_question)
+                print(res['combination'])
 
-        test = self.score.set_scored(res, self.tab_dice)
-        print(test)
+                # set score on scoreboard
+                scoreboard = self.score.set_scored(
+                    res['combination'], self.tab_dice)
+            else:
+
+                unscore_tab = self.score.get_unscore_tab()
+
+                combination_to_zero_question = [
+                    inquirer.List(
+                        "combination_to_zero",
+                        message="Quelle combinaison voulez-vous mettre à zéro ? ",
+                        choices=unscore_tab,
+                    ),
+                ]
+
+                res_set_to_zero = inquirer.prompt(combination_to_zero_question)
+
+                self.score.set_score_to_zero(
+                    res_set_to_zero['combination_to_zero'])
+
+            # verify if scoreboard is full
+            if (self.score.state_scoreboard()):
+                break
+
+            os.system('cls' if os.name == 'nt' else 'clear')
+
+        print("game is terminated")
 
 
 play = Game()
