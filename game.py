@@ -3,6 +3,7 @@ import dice
 import combination
 import score
 import inquirer
+from prettytable import PrettyTable
 
 
 class Game:
@@ -12,8 +13,6 @@ class Game:
     score = score.Score()
 
     tab_dice = []
-    rule = None
-    point = None
 
     def get_dice(self):
         for i in range(3):
@@ -60,6 +59,8 @@ class Game:
                 self.tab_dice.append(int(j))
 
     def playGame(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
         print("Game started !")
 
         while True:
@@ -112,19 +113,23 @@ class Game:
             if (self.score.state_scoreboard()):
                 break
 
-        print("game ended")
+        print("GAME ENDED !")
 
         scoreboard = self.score.get_scoreboard()
 
-        print("-----------------")
-        print("your score : ", scoreboard[0])
-        print("-----------------")
+        cli_tab_score = PrettyTable(['Total', scoreboard[0]])
 
         for i in range(2):
             for key, value in scoreboard[1][i].items():
-                print(key, ' | ', value)
-                print("____________________")
+                cli_tab_score.add_row([key, value])
 
+        print(cli_tab_score)
 
-play = Game()
-play.playGame()
+        return_menu = [
+            inquirer.List(
+                "return_menu",
+                choices=["Back to the menu"],
+            ),
+        ]
+
+        res = inquirer.prompt(return_menu)
