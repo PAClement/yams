@@ -60,10 +60,25 @@ class Game:
 
     def playGame(self):
         os.system('cls' if os.name == 'nt' else 'clear')
+        self.score.scoreboard_to_zero()
 
         print("Game started !")
 
         while True:
+
+            scoreboard = self.score.current_scoreboard()
+            cli_tab_score = PrettyTable(['Combination', 'Yours points'])
+
+            for i in range(2):
+                for key, value in scoreboard[i].items():
+                    if (value == None):
+                        current_value = "-"
+                    else:
+                        current_value = value
+                    cli_tab_score.add_row([key, current_value])
+
+            print(cli_tab_score)
+
             # Retrieve players dice after 3 round
             self.tab_dice = []
             self.get_dice()

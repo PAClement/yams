@@ -26,14 +26,14 @@ class Menu:
                 inquirer.List(
                     "choices",
                     message="Make your choice ",
-                    choices=["Start game", "Quit"],
+                    choices=["Start new game", "Quit"],
                 ),
             ]
 
             res = inquirer.prompt(choices)
             option = res['choices']
 
-            if (option == "Start game"):
+            if (option == "Start new game"):
                 self.game.playGame()
 
 

@@ -24,7 +24,17 @@ class Score:
 
     bonus = None  # if all point before is upper than 62, bonus = +35
 
-    sum_point = 0
+    def scoreboard_to_zero(self):
+        self.score_tab = [
+            {
+                "1": None, "2": None, "3": None,
+                "4": None, "5": None, "6": None
+            },
+            {
+                "brelan": None, "square": None, "full": None,
+                "small_suite": None, "big_suite": None, "yams": None, "chance": None
+            }
+        ]
 
     def score_verification(self, model):
 
@@ -135,3 +145,7 @@ class Score:
         final_scoreboard.append(score)
         final_scoreboard.append(self.score_tab)
         return final_scoreboard
+
+    def current_scoreboard(self):
+
+        return self.score_tab
