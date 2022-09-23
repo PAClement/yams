@@ -36,7 +36,7 @@ class Score:
             }
         ]
 
-    def score_verification(self, model):
+    def score_available(self, model):
 
         available_place = []
         for i in range(2):
