@@ -1,5 +1,6 @@
 import inquirer
 from prettytable import PrettyTable
+import pyfiglet
 
 
 class Display:
@@ -26,3 +27,8 @@ class Display:
                 cli_tab_score.add_row([key, current_value])
 
         print(cli_tab_score)
+
+    def titleDisplay(self, text):
+
+        print(pyfiglet.figlet_format(text))
+

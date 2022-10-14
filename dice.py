@@ -16,7 +16,6 @@ class Dice:
     def set_value(self, value):
         self.__value = value
 
-
 class Dices:
 
     dices = []

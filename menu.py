@@ -1,15 +1,16 @@
 import os
-import bcolor
-import pyfiglet
 
 import game
 import display
+import history
+import bdd
 
 class Menu:
 
-    colors = bcolor.Bcolors()
     game = game.Game()
     display = display.Display()
+    history = history.History()
+    bdd = bdd.Bdd()
 
     def __init__(self):
         self.start_game()
@@ -20,15 +21,22 @@ class Menu:
         while (option != "Quit"):
             os.system('cls' if os.name == 'nt' else 'clear')
 
-            print(pyfiglet.figlet_format("YAMS"))
-
-            res = self.display.input_inquirer_list("choices", "Make your choice ", ["Start new game", "Quit"])
+            self.bdd.createTable()
             
-            option = res['choices']
+            self.display.titleDisplay("YAMS")
 
-            if (option == "Start new game"):
-                os.system('cls' if os.name == 'nt' else 'clear')
-                self.game.playGame()
+            res = self.display.input_inquirer_list("choices", "Make your choice ", ["Start new game", "Game History", "Quit"])
+
+            match res['choices']:
+                case "Start new game":
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    self.game.playGame()
+                case "Game History":
+                    self.history.gameHistoryMenu()
+                case "Quit":
+                    option = "Quit"
+
+                
 
 
 play = Menu()

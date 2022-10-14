@@ -1,11 +1,10 @@
 import os
-from prettytable import PrettyTable
 
 import dice
 import combination
 import score
 import display
-
+import bdd
 
 class Game:
 
@@ -13,6 +12,7 @@ class Game:
     combination = combination.Combination()
     score = score.Score()
     display = display.Display()
+    bdd = bdd.Bdd()
 
     tab_dice = []
 
@@ -53,10 +53,33 @@ class Game:
             if (len(self.tab_dice) < 5):
                 self.tab_dice.append(int(j))
 
-    def playGame(self):
-        self.score.scoreboard_to_zero()
+    def split_if_model_is_empty_or_not(self, model_scored):
 
-        print("Game started !")
+        if (len(model_scored) != 0):
+            print("Vos dés ", self.tab_dice)
+
+            res = self.display.input_inquirer_list("combination", "Quelle combinaison voulez-vous ?", model_scored)
+
+            print(res['combination'])
+
+            # set score on scoreboard
+            self.score.set_scored(res['combination'], self.tab_dice)
+        else:
+
+            res_set_to_zero = self.display.input_inquirer_list("combination_to_zero", "Quelle combinaison voulez-vous mettre à zéro ? ", self.score.get_unscore_tab())
+
+            self.score.set_score_to_zero(res_set_to_zero['combination_to_zero'])
+
+    def playGame(self):
+        
+        isNewGame = self.score.reload_scoreboard()
+
+        if(isNewGame):
+            self.bdd.newGame()
+            print("Game started !")
+        else:
+            print("Game resume !")
+        
 
         while True:
 
@@ -74,27 +97,13 @@ class Game:
             if (self.score.state_scoreboard()):
                 break
 
-        print("GAME ENDED !")
+        self.display.titleDisplay("GAME ENDED !")
 
         scoreboard = self.score.get_scoreboard()
+
+        self.bdd.setTotal(int(scoreboard[0]))
+
         self.display.display_scoreboard("Total", scoreboard[0], scoreboard[1])
 
         # Input for return to the menu
         self.display.input_inquirer_list("return_menu", "GG !", ["Back to the menu"])
-
-    def split_if_model_is_empty_or_not(self, model_scored):
-
-        if (len(model_scored) != 0):
-            print("Vos dés ", self.tab_dice)
-
-            res = self.display.input_inquirer_list("combination", "Quelle combinaison voulez-vous ?", model_scored)
-
-            print(res['combination'])
-
-            # set score on scoreboard
-            self.score.set_scored(res['combination'], self.tab_dice)
-        else:
-
-            res_set_to_zero = self.display.input_inquirer_list("combination_to_zero", "Quelle combinaison voulez-vous mettre à zéro ? ", self.score.get_unscore_tab())
-
-            self.score.set_score_to_zero(res_set_to_zero['combination_to_zero'])
