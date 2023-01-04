@@ -62,7 +62,7 @@ class Bdd:
     self.conn.commit()
 
   def setTotal(self, value):
-    self.cursor.execute("UPDATE game SET score=? WHERE id = (SELECT MAX(id) FROM game) ", (value,))
+    self.cursor.execute("UPDATE game SET score=? , party_end=? WHERE id = (SELECT MAX(id) FROM game) ", (value,True))
     self.conn.commit()
 
   def getLastParty(self):
